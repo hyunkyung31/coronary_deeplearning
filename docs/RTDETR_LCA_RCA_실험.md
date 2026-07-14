@@ -57,24 +57,47 @@
   볼 것. 필요하면 이후 ablation에서 RCA만 augmentation을 강하게
   주는 것을 검토.
 
-## 3. 결과 (실행 후 채우기)
+## 3. 결과
 
-| Split | View | P | R | mAP50 | mAP50-95 |
-|-------|------|---|---|-------|----------|
-| Val   | LCA  |   |   |       |          |
-| Val   | RCA  |   |   |       |          |
-| Test  | LCA  |   |   |       |          |
-| Test  | RCA  |   |   |       |          |
+### 3.1 뷰 전용 모델 (동일 뷰 test로 평가)
 
-## 4. 해석 가이드
+| Split | View | P | R | mAP50 | mAP50-95 | notes |
+|-------|------|------|------|-------|----------|-------|
+| Val   | LCA  | — | — | **0.092** | — | `train_lca_v1` |
+| Test  | LCA  | — | — | **0.463** | — | |
+| Val   | RCA  | 0.557 | 0.259 | **0.243** | 0.064 | val n=81, EarlyStop@41 / best@21 |
+| Test  | RCA  | 0.073 | 0.067 | **0.013** | 0.004 | 붕괴 |
 
-- LCA/RCA 각각의 mAP50이 통합 baseline(val 0.117 / test 0.308)보다
-  **둘 다** 높아지면 → 뷰 분리가 유효했다는 신호. 다음 단계에서
-  두 모델을 뷰별로 서빙하거나, 뷰 분류기 + 뷰별 탐지기 조합을 고려.
-- 한쪽(특히 LCA, 데이터가 더 많은 쪽)만 개선되고 RCA는 표본 부족으로
-  큰 변동을 보이면 → RCA는 데이터 증강/외부 데이터 없이는 한계가
-  있다는 결론으로, 통합 모델 유지 + RCA 전용 후처리(threshold 조정 등)
-  같은 대안을 검토.
-- 두 뷰 모두 개선이 없거나 나빠지면 → 뷰 분리보다 다른 요인(lr, 데이터
-  절대량, augmentation)이 더 중요하다는 뜻이므로 다음 순서였던 CLAHE
-  ablation이나 cos_lr/lr0=0.0003 등 정제 아이디어로 넘어감.
+### 3.2 공정 비교: 통합 baseline을 같은 뷰-test에 평가
+
+| Model | Eval set | P | R | mAP50 | mAP50-95 |
+|-------|----------|------|------|-------|----------|
+| LCA-only (`train_lca_v1`) | LCA-TEST | — | — | 0.463 | — |
+| Baseline (`train_v3_amp_on`) | LCA-TEST | — | — | **0.485** | 0.242 |
+| RCA-only (`train_rca_v1`) | RCA-TEST | 0.073 | 0.067 | 0.013 | 0.004 |
+| Baseline (`train_v3_amp_on`) | RCA-TEST | 0.188 | 0.189 | **0.060** | 0.020 |
+
+→ **같은 test에서 통합 baseline이 뷰 전용보다 항상 우위.**
+
+데이터 규모 (frames): LCA train/val/test = 1818 / 254 / 153,
+RCA = 1259 / 81 / 120.
+
+## 4. 결론 — **뷰 분리 폐기**
+
+1. **LCA**: 전용 모델(0.463) < baseline(0.485). 이득 없음.
+2. **RCA**: val mAP50=0.243은 좋아 보였으나 test=0.013으로 붕괴.
+   val이 video 8개 / frame 81장뿐이라 early-stop 신호가 신뢰할 수 없음.
+   baseline도 RCA-TEST에서 mAP50=0.060으로 약하지만, RCA-only보다 4배 이상 나음.
+3. 통합 baseline이 LCA에서 강하고 RCA에서 약한 asymmetry는 남지만,
+   뷰를 쪼개면 표본이 더 줄어서 오히려 악화 → **통합 640 baseline 유지**.
+
+다음 실험: **CADICA train + ARCADE stenosis train** 병합
+(`cursor/cadica-arcade-merge-a265`, val/test는 CADICA만).
+
+## 5. 해석 가이드 (사후)
+
+- 가설(뷰 분리 → 안정화)은 **기각**. 불안정/낮은 mAP의 주원인은
+  뷰 혼합보다 **데이터 절대량·라벨 난이도** 쪽에 가깝다.
+- RCA가 본질적으로 더 어렵다(baseline도 RCA-TEST 0.060 vs LCA-TEST 0.485).
+  뷰 분리로는 해결되지 않음 → 외부 데이터(ARCADE) 또는 학습 안정화
+  (`cos_lr`, 낮은 lr)로 이동.
