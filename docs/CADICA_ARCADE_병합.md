@@ -6,8 +6,18 @@
 
 ## 0. 배경 — 왜 이 실험을 하나
 
-- LCA/RCA 분리 결과: 같은 LCA-test에서 baseline(mAP50=0.485) > LCA 전용
-  모델(mAP50=0.463) → **뷰 분리는 폐기**, 통합 640 baseline 유지.
+- LCA/RCA 분리 결과 → **뷰 분리 폐기**, 통합 640 baseline 유지.
+
+  | Model | Eval | mAP50 |
+  |-------|------|-------|
+  | LCA-only | LCA-TEST | 0.463 |
+  | Baseline | LCA-TEST | **0.485** |
+  | RCA-only | RCA-TEST | 0.013 |
+  | Baseline | RCA-TEST | **0.060** |
+
+  RCA val(0.243)은 좋아 보였으나 test에서 붕괴(0.013). val n=81(video 8)
+  이라 early-stop 신호가 신뢰되지 않음. baseline도 RCA가 본질적으로 약하지만
+  뷰를 쪼개면 더 나빠짐.
 - CADICA는 환자 42명으로 탐지 학습 기준 데이터가 작음 → 다음 카드로
   **외부 공개 데이터 추가(ARCADE stenosis)** 시도.
 
