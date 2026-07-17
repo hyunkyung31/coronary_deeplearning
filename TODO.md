@@ -12,6 +12,7 @@
 - [x] `EXPERIMENT_LOG.md` 작성
 - [x] `PROJECT_ARCHITECTURE.md` 작성
 - [x] `TODO.md` 작성
+- [x] `docs/experiments/E00`~`E04` 실험별 상세 문서 작성
 - [ ] 사용자 검토 후 부족한 내용 보완 (요청 시)
 
 ---

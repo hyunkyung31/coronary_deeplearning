@@ -150,6 +150,12 @@ CADICA Validation / Test Evaluation
 
 ## 8. 관련 문서
 
-- `EXPERIMENT_LOG.md` — 실험 이력
+- `EXPERIMENT_LOG.md` — 실험 이력 요약
 - `PROJECT_ARCHITECTURE.md` — 코드/구조
 - `TODO.md` — 할 일 체크리스트
+- `docs/experiments/` — 실험별 상세
+  - `E00_dataset.md`
+  - `E01_adsd_pretraining.md`
+  - `E02_cadica_finetuning.md`
+  - `E03_domain_analysis.md`
+  - `E04_crop_experiment.md`

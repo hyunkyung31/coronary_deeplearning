@@ -8,15 +8,17 @@
 
 ## 실험 인덱스
 
-| ID | 이름 | 상태 | 핵심 결과 |
-|---|---|---|---|
-| E0 | 데이터셋 검사 / 프로토콜 확정 | 완료 | 구조·split·포맷 검증, 등급 병합 확정 |
-| E1 | ADSD Pretraining (Faster R-CNN) | 완료 | best val mAP50 = 0.1124, ES@epoch 13 |
-| E2 | CADICA Fine-tuning (ADSD init) | 파이프라인 준비됨 / 결과 대기 | — |
-| E3 | ImageNet/COCO-only CADICA baseline | **보류** (시간 부족) | fair comparison용, 동일 HP로 추후 실행 |
-| E4 | ADSD 전처리(상대 면적 정렬) 후 재전이 | **설계만** (미구현) | 크롭 전략 제안, 승인 대기 |
-| A1 | 파이프라인 감사 | 완료 | 코드 버그 없음, 설계상 특징 확인 |
-| A2 | ADSD vs CADICA 통계 비교 | 완료 | 도메인 불일치 정량화 |
+상세 문서는 `docs/experiments/`에 분리되어 있다.
+
+| ID | 상세 파일 | 이름 | 상태 | 핵심 결과 |
+|---|---|---|---|---|
+| E0 | [E00_dataset.md](docs/experiments/E00_dataset.md) | 데이터셋 검사 / 프로토콜 확정 | 완료 | 구조·split·포맷 검증, 등급 병합 확정 |
+| E1 | [E01_adsd_pretraining.md](docs/experiments/E01_adsd_pretraining.md) | ADSD Pretraining (Faster R-CNN) | 완료 | best val mAP50 = 0.1124, ES@epoch 13 |
+| E2 | [E02_cadica_finetuning.md](docs/experiments/E02_cadica_finetuning.md) | CADICA Fine-tuning (ADSD init) | 파이프라인 준비됨 / 결과 대기 | — |
+| E3 | [E03_domain_analysis.md](docs/experiments/E03_domain_analysis.md) | 도메인 분석 (+ ImageNet baseline은 보류) | 분석 완료 / baseline 보류 | 도메인 불일치 정량화 |
+| E4 | [E04_crop_experiment.md](docs/experiments/E04_crop_experiment.md) | ADSD 전처리(상대 면적 정렬) 후 재전이 | **설계만** (미구현) | 크롭 전략 제안, 승인 대기 |
+| A1 | (E03에 포함) | 파이프라인 감사 | 완료 | 코드 버그 없음, 설계상 특징 확인 |
+| A2 | (E03에 포함) | ADSD vs CADICA 통계 비교 | 완료 | 도메인 불일치 정량화 |
 
 ---
 
